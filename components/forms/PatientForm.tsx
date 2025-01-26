@@ -9,6 +9,8 @@ import { Input } from "@/components/ui/input"
 import CustomFormField from "../CustomFormField"
 import SubmitButton from "../SubmitButton"
 import { useState } from "react"
+import {UserFormValidation} from "@/lib/validation"
+import { create } from "domain"
 
 export enum FormFieldType{
   INPUT= 'input',
@@ -20,23 +22,29 @@ export enum FormFieldType{
   SKELETON= 'skeleton',
 }
  
-const formSchema = z.object({
-  username: z.string().min(10, {
-    message: "Username must be at least 10 characters.",
-  }),
-})
+
  
 const PatientForm = () => {
   const [isLoading, setIsLoading]= useState(false);
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+
+  const form = useForm<z.infer<typeof UserFormValidation>>({
+    resolver: zodResolver(UserFormValidation),
     defaultValues: {
-      username: "",
+      name: "",
+      email:"",
+      phone:"",
     },
   })
  
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
+  async function onSubmit({name,email,phone}: z.infer<typeof UserFormValidation>) {
+    setIsLoading
+    try {
+      //const userData ={name,email,phone};
+      //const user = await createUser(userData);
+    } catch (error) {
+      console.log(error)
+    }
+
   }
   return (
     <Form {...form}>
@@ -48,7 +56,7 @@ const PatientForm = () => {
         <CustomFormField
           fieldType={FormFieldType.INPUT}
           control={form.control}
-          name="Name"
+          name="name"
           label="Full name"
           placeholder="write your full name"
           iconSrc="/assets/icons/user.svg"
